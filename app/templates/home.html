@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% include 'base.html' %}
+{% block content %}
+
+<div class="container mb-3 mt-3">
+        <table class="table table-striped table-bordered mydatatable" style="width:100%">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Replies</th>
+                <th>Author</th>
+                <th>Votes</th>
+                <th>Replies</th>
+            </tr>
+        </thead>
+    </table>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+    function setupData() {
+        $(document).ready(function () {
+            $('.mydatatable').DataTable({
+                "ajax": {
+                    // "url": "static/objects2.txt", // This works for the static file
+                    "url": "/index_get_data", // This now works too thanks to @kthorngren
+                    "dataType": "json",
+                    "dataSrc": "data",
+                    "contentType":"application/json"
+                },
+                "columns": [
+                    {"data": "title"},
+                    {"data": "date"},
+                    {"data": "replies"},
+                    {"data": "username"},
+                    {"data": "votes"},
+                    {"data": "replies"}
+                ]
+            });
+        });
+    }
+    $( window ).on( "load", setupData );
+    //  $('.mydatatable').DataTable();
+    </script>
+
+
+
+
+{% endblock content %}

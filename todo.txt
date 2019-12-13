@@ -1,0 +1,46 @@
+Views
+-Home Page with Posts and top bar
+- New Post page
+- Individual Posts Page
+- By Scene (City)
+- By Genre
+
+
+Top Bar
+-scenes
+-genres
+
+-Post table
+- find way to indicated image post
+- be able to click on the post
+- importance algorithm
+-make only subset of posts displayed and searchable instantly,
+rest go to archive page which does not do an instant search
+-when you hover over a part of the table it you a quick view for a photo
+or the beggining of text
+
+
+Side Bar
+- New Post
+- Register for an account (maybe)
+- About
+
+New Post Page
+- make the text area field bigger
+- impose length restrictions
+- check Files
+-make urls not required
+
+Individual Post Page
+-replies where people can @ a specific comment
+
+
+
+Back End
+- profanity checker
+if a post contains an image then use flask-imgur, and then display the image
+using imgur embedding on the post page
+
+Front End
+- make it look cool
+- light mode and dark mode
