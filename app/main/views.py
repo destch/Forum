@@ -15,6 +15,11 @@ def index():
     name = None
     form = PostForm()
     if form.validate_on_submit():
+        #heres where we have to build stuff out
+        #find a way to quickly create a new post id if one isnt auto created
+        new_post = Post()
+        db.session.add(new_post)
+        db.session.commit()
         pass
     return render_template('post.html', form=form, name=name)
 

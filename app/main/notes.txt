@@ -1,0 +1,7 @@
+For the new post form we want the new post to update the database with the
+appropriate info and then update the main table.
+
+
+first step, where the hell are the form variabels being stored?
+
+variables just need to be put in using sqlalchemy

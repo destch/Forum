@@ -9,9 +9,9 @@ class Post(db.Model):
     body = db.Column(db.Text)
     link = db.Column(db.String)
     source = db.Column(db.String(256))
-    username = db.Column(db.String(64))
+    username = db.Column(db.String(64), defualt = 'Anonymous')
     file_location = db.Column(db.String(256))
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, defualt = datetime.datetime.utcnow)
     replies = db.Column(db.Integer)
     votes = db.Column(db.Integer)
 
