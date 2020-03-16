@@ -11,7 +11,7 @@ class BasicTestCase(unittest.TestCase):
 
     def tearDown(self):
         db.session.remove()
-        db.drop.all()
+        db.drop_all()
         self.app_context.pop()
 
     def test_app_exists(self):
