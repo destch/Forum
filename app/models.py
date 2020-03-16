@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import current_app, request, url_for
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -14,17 +15,13 @@ class Role(db.Model):
     users = db.relationship('User', backref='role', lazy='dynamic')
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
-
-    def __repr__(self):
-        return '<User %r>' % self.username
-
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-
     password_hash = db.Column(db.String(128))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     @property
     def password(self):
