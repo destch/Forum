@@ -1,0 +1,7 @@
+Dear {{ user.username }},
+Welcome to Groove Spot!
+To confirm your account please click on the following link:
+{{ url_for('auth.confirm', token=token, _external=True) }}
+Sincerely,
+The GS Team
+Note: replies to this email address are not monitored.

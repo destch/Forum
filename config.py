@@ -2,6 +2,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
+    DEBUG=True
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'Na7LYg'
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
@@ -39,3 +40,4 @@ config = {
     'default': DevelopmentConfig
 
 }
+
