@@ -1,10 +1,12 @@
 from datetime import datetime
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app, request, url_for
-from . import db
+import hashlib
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from markdown import markdown
+import bleach
+from flask import current_app, request, url_for
 from flask_login import UserMixin, AnonymousUserMixin
-from . import login_manager
+from . import db, login_manager
 
 class Permission:
     FOLLOW = 1
@@ -17,7 +19,7 @@ class Permission:
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique = True)
+    name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
     users = db.relationship('User', backref='role', lazy='dynamic')
@@ -49,9 +51,8 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
-
     def add_permission(self, perm):
-        if not self.has_permission:
+        if not self.has_permission(perm):
             self.permissions += perm
 
     def remove_permission(self, perm):
@@ -61,12 +62,11 @@ class Role(db.Model):
     def reset_permissions(self):
         self.permissions = 0
 
-    def has_permission(self,perm):
+    def has_permission(self, perm):
         return self.permissions & perm == perm
 
     def __repr__(self):
         return '<Role %r>' % self.name
-
 
 
 class User(UserMixin, db.Model):
@@ -74,18 +74,15 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64))
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
-    members_since = db.Column(db.DateTime(), default = datetime.utcnow)
-    last_seen = db.Column(db.DateTime(), default = datetime.utcnow)
-
-
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    confirmed = db.Column(db.Boolean, default=False)
-
-
+    confirmed = db.Column(db.Boolean, default=True)
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -95,6 +92,11 @@ class User(UserMixin, db.Model):
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
 
+    def gravatar(self, size=100, default='identicon', rating='g'):
+        url = 'https://secure.gravatar.com/avatar'
+        hash = hashlib.md5(self.email.lower().encode('utf-8')).hexdigest()
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+            url=url, hash=hash, size=size, default=default, rating=rating)
 
     @property
     def password(self):
@@ -142,28 +144,22 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
-login_manager.anonymous_user = AnonymousUser
 
+login_manager.anonymous_user = AnonymousUser
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Text)
     body = db.Column(db.Text)
-    link = db.Column(db.String)
-    source = db.Column(db.String(256))
-    username = db.Column(db.String(64))
-    file_location = db.Column(db.String(256))
-    date = db.Column(db.DateTime, default = datetime.utcnow)
-    replies = db.Column(db.Integer)
-    votes = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    comments = db.relationship('Comment', backref='post', lazy = 'dynamic')
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -175,6 +171,3 @@ class Comment(db.Model):
     file_location = db.Column(db.String(256))
 
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-
-
-
