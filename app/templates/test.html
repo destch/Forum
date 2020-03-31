@@ -1,0 +1,23 @@
+<ul class="posts">
+    {% for test in posts %}
+    <div class="card flex-row flex-wrap", href = 'www.google.com'>
+        <div class="card-header border-0">
+            <img class='post-thumbnail' src="{{url_for('static', filename='text.jpg')}}" >
+        </div>
+        <div class="card-block px-2">
+            <a href="google.com" class="click-card">
+                <a href="#" class="btn btn-primary">Chicago</a>
+                <h4 class="card-title">{{test.title}}</h4>
+                <p class="card-text">Posted by: {{test.author.username}}</p>
+                <p class="card-text">March 20, 2020</p>
+                <p class="card-text">3 Comments</p>
+            </a>
+        </div>
+        <div class="w-100"></div>
+
+    </div>
+    <br>
+    {% endfor %}
+</ul>
+
+

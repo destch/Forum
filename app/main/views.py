@@ -3,7 +3,7 @@ from flask import render_template, session, redirect, url_for, jsonify, flash, r
 from . import main
 from .forms import PostForm, EditProfileAdminForm, EditProfileForm, CommentForm
 from .. import db
-from ..models import Post, Comment, User, Permission
+from ..models import Post, Comment, User, Permission, Test
 import json
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
@@ -41,22 +41,29 @@ def index():
     return render_template('index.html', form=form, posts=posts,
                            show_followed=show_followed, pagination=pagination)
 
-@main.route('/index_get_data')
-def stuff():
-    def example():
-        query = Post.query.all()
-        pre = [r.__dict__ for r in query]
-        data = [r.pop('_sa_instance_state', None) for r in pre]
-        return(pre)
-
-    data = {
-        "data": example()
-        }
-    return jsonify(data)
-
-@main.route('/scenes')
-def scenes():
-    return render_template('scenes.html')
+@main.route('/test', methods=['GET', 'POST'])
+def test():
+    form = PostForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    show_followed = False
+    if current_user.is_authenticated:
+        show_followed = bool(request.cookies.get('show_followed', ''))
+    if show_followed:
+        query = current_user.followed_posts
+    else:
+        query = Test.query
+    pagination = query.order_by(Test.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('index_test.html', form=form, posts=posts,
+                           show_followed=show_followed, pagination=pagination)
 
 @main.route('/edit-profile', methods = ['Get', 'Post'])
 @login_required
