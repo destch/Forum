@@ -290,11 +290,15 @@ def load_user(user_id):
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    scene = db.Column(db.Text)
+    link = db.Column(db.Text)
+    type = db.Column(db.Text)
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -311,6 +315,10 @@ class Post(db.Model):
             'body': self.body,
             'body_html': self.body_html,
             'timestamp': self.timestamp,
+            'title': self.title,
+            'scene': self.scene,
+            'type': self.type,
+            'link': self.link,
             'author_url': url_for('api.get_user', id=self.author_id),
             'comments_url': url_for('api.get_post_comments', id=self.id),
             'comment_count': self.comments.count()

@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from faker import Faker
 from . import db
 from .models import User, Post
+from random import randint
 
 
 def users(count=100):
@@ -31,6 +32,10 @@ def posts(count=100):
     for i in range(count):
         u = User.query.offset(randint(0, user_count - 1)).first()
         p = Post(body=fake.text(),
+                 title=fake.text()[:30],
+                 type=['thread', 'link'][randint(0,1)],
+                 link='www.link.com',
+                 scene=['Chicago', 'NYC', 'Los Angeles'][randint(0,2)],
                  timestamp=fake.past_date(),
                  author=u)
         db.session.add(p)

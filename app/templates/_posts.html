@@ -30,7 +30,7 @@
                     <span class="label label-default">View Post</span>
                 </a>
                 <a href="{{ url_for('.post', id=post.id) }}#comments" style="text-decoration: none">
-                    <span class="label label-primary">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
+                    <span class="label label-primary">{{ post.comments.count() }} Comments</span>
                 </a>
             </div>
         </div>

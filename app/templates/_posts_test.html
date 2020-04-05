@@ -3,17 +3,22 @@
     {% for post in posts %}
     <li class="post">
         <div class="card flex-row flex-wrap">
-            <div class="card-header">
-                <img class=" card-img mx-auto my-auto" src="../static/text.jpg" >
+            <div class="col-md-4">
+                {% if post.type == 'thread' %}
+                    <img class="card-image" src="../static/thread.jpg" >
+                {% else %}
+                    <img class="card-image" src="../static/link.jpg" >
+                {% endif %}
+
             </div>
-            <div class="card-block px-3">
-                <p id="scene">STREET STYLE</p>
-                <h4 class="card-title">The 10 most Expensive Items Sold on Grailed This Week</h4>
-                <p class="card-text">{{ post.body }}</p>
+            <div class="col-md-8">
+                <p id="scene">{% if post.scene %} {{post.scene}} {% else %} General {% endif %}</p>
+                <h4 class="card-title">{{post.title}}</h4>
+                <p class="card-text">{{ post.body}}</p>
                 <div class="card-bottom">
                     <span class="card-author">By: {{ post.author.username }}</span>
                     <span class="card-date">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
-                    <span class="card-comments">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
+                    <span class="card-comments">{{ post.comments.count() }} Comments</span>
                 </div>
 
 
@@ -23,3 +28,4 @@
     </li>
     {% endfor %}
 </ul>
+

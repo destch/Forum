@@ -15,17 +15,19 @@ class ThreadForm(FlaskForm):
     body = TextAreaField('Body', render_kw={'class': 'form-control', 'rows': 5})
     scene = SelectField(u'Post to Scene (Optional)', choices=[('',''),('Los Angeles', 'Los Angeles'), ('NYC', 'NYC'),
                                                               ('Chicago', 'Chicago')])
+    type = 'thread'
     image = FileField('Post Thumbnail (Optional)')
     submit = SubmitField('Submit')
 
 
 # forms section
 class LinkForm(FlaskForm):
-    link = StringField('Link', validators=[DataRequired(), URL(message='A URL is required')])
+    link = StringField('Link', validators=[DataRequired()])
     title = StringField('Title', validators=[DataRequired(), Length(0, 256)])
     body = TextAreaField('Body (Optional)', render_kw={'class': 'form-control', 'rows': 5})
     scene = SelectField(u'Post to Scene (Optional)', choices=[('',''),('Los Angeles', 'Los Angeles'), ('NYC', 'NYC'),
                                                               ('Chicago', 'Chicago')])
+    type = 'link'
     image = FileField('Post Thumbnail (Optional)')
     submit = SubmitField('Submit')
 

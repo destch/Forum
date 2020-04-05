@@ -27,6 +27,7 @@ ul.posts {
     margin: 0px 0px 0px 0px;
     border-top: 1px solid #e0e0e0;
     width: 800px;
+    font-family: 'Arial'
 
 }
 div.post-tabs ul.posts {
@@ -141,7 +142,7 @@ div.flask-pagedown-preview h3 {
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 0.0rem;
-  padding: 15px
+  padding: 0px
 }
 
 .card > hr {
@@ -163,7 +164,7 @@ div.flask-pagedown-preview h3 {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   min-height: 1px;
-  padding: 2rem;
+  padding: 0rem;
 
 }
 
@@ -188,9 +189,11 @@ div.flask-pagedown-preview h3 {
 
 
 #scene{
-   margin-top: 4rem;
+   margin-top: 1rem;
 }
-
+.card-bottom{
+   margin-bottom: 1rem;
+}
 
 .card-subtitle {
   margin-top: -0.375rem;
@@ -246,43 +249,16 @@ div.flask-pagedown-preview h3 {
   margin-left: -0.625rem;
 }
 
-.card-img-overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 1.25rem;
+.card-image{
+horizontal-align: center;
+margin-left: 5rem;
+margin-right: 5rem;
+margin-top: 2rem;
+margin-bottom: 2rem;
 }
 
-.card-img,
-.card-img-top,
-.card-img-bottom {
-  -ms-flex-negative: 0;
-  flex-shrink: 0;
-  width: 100%;
-  background-position: center;
-}
 
-.card-img,
-.card-img-top {
-  border-top-left-radius: calc(0.25rem - 1px);
-  border-top-right-radius: calc(0.25rem - 1px);
-}
 
-.card-img,
-.card-img-bottom {
-  border-bottom-right-radius: calc(0.25rem - 1px);
-  border-bottom-left-radius: calc(0.25rem - 1px);
-}
-
-.card-img:hover{
-   transform: scale(1.4);
-}
-
-.card-deck .card {
-  margin-bottom: 15px;
-}
 
 @media (min-width: 576px) {
   .card-deck {
@@ -446,4 +422,15 @@ span.card-comments{
   display: inline-block;
   font-size: 12px;
   margin: 0px;
+}
+
+.col-md-8{
+text-align: left;
+padding: 0em;
+}
+
+.col-md-4{
+ display: flex;
+ align-items:center;
+ padding: 0em;
 }
