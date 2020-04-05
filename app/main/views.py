@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, jsonify, flash, request, current_app, make_response
 from . import main
-from .forms import PostForm, EditProfileAdminForm, EditProfileForm, CommentForm
+from .forms import ThreadForm, LinkForm, EditProfileAdminForm, EditProfileForm, CommentForm
 from .. import db
 from ..models import Post, Comment, User, Permission, Test
 import json
@@ -19,13 +19,6 @@ def user(username):
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    form = PostForm()
-    if current_user.can(Permission.WRITE) and form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
     show_followed = False
     if current_user.is_authenticated:
@@ -38,7 +31,7 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts,
+    return render_template('index.html', posts=posts,
                            show_followed=show_followed, pagination=pagination)
 
 @main.route('/test', methods=['GET', 'POST'])
@@ -262,3 +255,27 @@ def moderate_disable(id):
     db.session.add(comment)
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
+
+@main.route('/new/thread', methods=['GET', 'POST'])
+@login_required
+def new_thread():
+    form = ThreadForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.index'))
+    return render_template('new_thread.html', form=form)
+
+@main.route('/new/link', methods=['GET', 'POST'])
+@login_required
+def new_link():
+    form = LinkForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        post = Post(body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('.index'))
+    return render_template('new_link.html', form=form)

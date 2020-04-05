@@ -1,0 +1,25 @@
+
+<ul class="posts">
+    {% for post in posts %}
+    <li class="post">
+        <div class="card flex-row flex-wrap">
+            <div class="card-header">
+                <img class=" card-img mx-auto my-auto" src="../static/text.jpg" >
+            </div>
+            <div class="card-block px-3">
+                <p id="scene">STREET STYLE</p>
+                <h4 class="card-title">The 10 most Expensive Items Sold on Grailed This Week</h4>
+                <p class="card-text">{{ post.body }}</p>
+                <div class="card-bottom">
+                    <span class="card-author">By: {{ post.author.username }}</span>
+                    <span class="card-date">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
+                    <span class="card-comments">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
+                </div>
+
+
+            </div>
+            <div class="w-100"></div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
