@@ -385,3 +385,10 @@ class Test(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     #comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
+#creating classes for things we want
+class Scene(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+    #posts = db.relationship('Post', backref='post', lazy='dynamic_
+    #users = db.relationship('Post', backreg='post', lazy='dynamc')
