@@ -2,8 +2,8 @@
 <ul class="posts">
     {% for post in posts %}
     <li class="post">
-        <div class="card flex-row flex-wrap">
-            <div class="col-md-4">
+        <a href="{{ url_for('.post', id=post.id) }}" class="card flex-row flex-wrap" id="post-cards-clickable">
+            <div class="col-md-4" id="post-card-img">
                 {% if post.type == 'thread' %}
                     <img class="card-image" src="../static/thread.jpg" >
                 {% else %}
@@ -24,7 +24,8 @@
 
             </div>
             <div class="w-100"></div>
-        </div>
+        </a>
+
     </li>
     {% endfor %}
 </ul>

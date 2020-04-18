@@ -1,5 +1,4 @@
 {% extends "bootstrap/base.html" %}
-
 {% block title %}Flasky{% endblock %}
 
 {% block head %}
@@ -7,7 +6,6 @@
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-
 {% endblock %}
 
 {% block navbar %}
@@ -36,6 +34,15 @@
                 </li>
 
                 {% endif %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Explore <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('main.new_thread') }}">Scenes</a></li>
+                        <li><a href="{{ url_for('main.new_link') }}">Grooves</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.can(Permission.MODERATE) %}
@@ -72,7 +79,11 @@
     </div>
     {% endfor %}
 
-    {% block page_content %}{% endblock %}
+    {% block page_content %}
+
+    {% endblock %}
+
+
 </div>
 {% endblock %}
 

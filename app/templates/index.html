@@ -5,17 +5,92 @@
 {% block title %}Groove Spot{% endblock %}
 
 {% block page_content %}
-<div class="post-tabs">
+<div class="row">
+    <div class="col-lg-8">
+        <div class="post-tabs">
     <h2 >Recent Posts</h2>
 </div>
-<div class="post-tabs">
+        <div class="post-tabs">
     {% include '_posts_test.html' %}
-</div>
-{% if pagination %}
+                 {% if pagination %}
 <div class="pagination">
     {{ macros.pagination_widget(pagination, '.index') }}
 </div>
 {% endif %}
+</div>
+    </div>
+    <!-- Sidebar Widgets Column -->
+    <div class="col-md-4" id="side-widget">
+
+    <!-- Search Widget -->
+    <div class="card my-4">
+      <h5 class="card-header">Search</h5>
+      <div class="card-body">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search for posts...">
+          <span class="input-group-btn">
+            <button class="btn btn-secondary" type="button">Go!</button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories Widget -->
+    <div class="card my-4">
+      <h5 class="card-header">Top Scenes</h5>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <ul class="list-unstyled mb-0">
+              <li>
+                <a href="#">New York</a>
+              </li>
+              <li>
+                <a href="#">Chicago</a>
+              </li>
+              <li>
+                <a href="#">Los Angeles</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-6">
+            <ul class="list-unstyled mb-0">
+              <li>
+                <a href="#">Berlin</a>
+              </li>
+              <li>
+                <a href="#">London</a>
+              </li>
+              <li>
+                <a href="#">Amsterdam</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side Widget -->
+    <div class="card my-4">
+      <h5 class="card-header">About Groove Spot</h5>
+      <div class="card-body">
+        Groove Spot is a place for conversations and information related to dance music or the dance music community.<br>
+          Remember to be respectful to others, and make sure to report any inappropriate content.
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+</div>
+
+
+
+
+
+
 {% endblock %}
 
 {% block scripts %}
