@@ -418,6 +418,7 @@ max-width: 960px;
 .mb-4,
 .my-4 {
   margin-bottom: 1.5rem !important;
+
 }
 
 .col {
@@ -785,3 +786,47 @@ max-width: 960px;
 margin-top: 15px
 }
 
+#comment-control-button{
+float: right;
+margin-right:5px;
+}
+
+#comment-reply-button{
+float: right;
+margin-right:5px;
+background-color: #337ab7;
+color: white;
+}
+
+#submit{
+background-color: #337ab7;
+color: white;
+}
+
+.comment-author{
+margin-bottom: 5px;
+margin-left: 5px
+}
+
+.comment-card{
+padding-top: 15px;
+  padding-right: 20px;
+  padding-bottom: 0px;
+  padding-left:20px;
+  border-bottom: 1px solid #ccc!important;
+  margin-bottom:15px;
+}
+.comment-body{
+margin-right:30px;
+margin-left: 5px;
+}
+
+#prof-img {
+    max-width: 40px;
+    max-height: 40px;
+}
+
+#user-img {
+    max-width: 100px;
+    max-height: 90px;
+}

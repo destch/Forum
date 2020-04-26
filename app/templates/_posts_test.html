@@ -12,7 +12,7 @@
 
             </div>
             <div class="col-md-8">
-                <p id="scene">{% if post.scene %} {{post.scene}} {% else %} General {% endif %}</p>
+                <p id="scene">{% if post.scene.name %} {{post.scene.name}} {% else %} General {% endif %}</p>
                 <h4 class="card-title">{{post.title}}</h4>
                 <p class="card-text">{{ post.body}}</p>
                 <div class="card-bottom">

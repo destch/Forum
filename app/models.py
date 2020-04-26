@@ -95,7 +95,6 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    test = db.relationship('Test', backref='author', lazy='dynamic')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
@@ -238,7 +237,7 @@ class User(UserMixin, db.Model):
 
     @property
     def followed_posts(self):
-        return Post.query.join(Follow, Follow.followed_id == Post.author_id)\
+        return Post.query.join(Follow, Follow.followed_id == Post.author_id) \
             .filter(Follow.follower_id == self.id)
 
     def to_json(self):
@@ -279,6 +278,7 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
 login_manager.anonymous_user = AnonymousUser
 
 
@@ -296,9 +296,10 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
-    scene = db.Column(db.Text)
+    scene_id = db.Column(db.Integer, db.ForeignKey('scenes.id'))
     link = db.Column(db.Text)
     type = db.Column(db.Text)
+
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -342,9 +343,10 @@ class Comment(db.Model):
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    disabled = db.Column(db.Boolean)
+    disabled = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -378,18 +380,12 @@ db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 
 
 
-class Test(db.Model):
-    __tablename__ = 'test'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128))
-    body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    #comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
-#creating classes for things we want
+
+# creating classes for things we want
 class Scene(db.Model):
+    __tablename__ = 'scenes'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
-    #posts = db.relationship('Post', backref='post', lazy='dynamic_
-    #users = db.relationship('Post', backreg='post', lazy='dynamc')
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    posts = db.relationship('Post', backref='scene', lazy='dynamic')

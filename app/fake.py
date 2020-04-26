@@ -1,4 +1,3 @@
-from random import randint
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
 from . import db
@@ -31,11 +30,12 @@ def posts(count=100):
     user_count = User.query.count()
     for i in range(count):
         u = User.query.offset(randint(0, user_count - 1)).first()
+        thread_int = randint(0,1)
         p = Post(body=fake.text(),
                  title=fake.text()[:30],
-                 type=['thread', 'link'][randint(0,1)],
-                 link='www.link.com',
-                 scene=['Chicago', 'NYC', 'Los Angeles'][randint(0,2)],
+                 type=['thread', 'link'][thread_int],
+                 link='www.link.com' if thread_int == 0 else None,
+                 scene_id=randint(1, 3),
                  timestamp=fake.past_date(),
                  author=u)
         db.session.add(p)

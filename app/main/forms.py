@@ -71,5 +71,5 @@ class EditProfileForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-    body = TextAreaField('Body', render_kw={'class': 'form-control', 'rows': 5})
+    body = TextAreaField('',render_kw={'class': 'form-control', 'rows': 3})
     submit = SubmitField('Submit')

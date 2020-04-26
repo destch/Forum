@@ -3,7 +3,7 @@ from flask import render_template, session, redirect, url_for, jsonify, flash, r
 from . import main
 from .forms import ThreadForm, LinkForm, EditProfileAdminForm, EditProfileForm, CommentForm
 from .. import db
-from ..models import Post, Comment, User, Permission, Test
+from ..models import Post, Comment, User, Permission, Scene
 import json
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
@@ -16,6 +16,7 @@ def user(username):
         abort(404)
     posts = user.posts.order_by(Post.timestamp.desc()).all()
     return render_template('user.html', user=user, posts=posts)
+
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -34,31 +35,11 @@ def index():
     return render_template('index.html', posts=posts,
                            show_followed=show_followed, pagination=pagination)
 
-@main.route('/test', methods=['GET', 'POST'])
-def test():
-    form = PostForm()
-    if current_user.can(Permission.WRITE) and form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
-    show_followed = False
-    if current_user.is_authenticated:
-        show_followed = bool(request.cookies.get('show_followed', ''))
-    if show_followed:
-        query = current_user.followed_posts
-    else:
-        query = Test.query
-    pagination = query.order_by(Test.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    return render_template('index_test.html', form=form, posts=posts,
-                           show_followed=show_followed, pagination=pagination)
 
-@main.route('/edit-profile', methods = ['Get', 'Post'])
+
+
+
+@main.route('/edit-profile', methods=['Get', 'Post'])
 @login_required
 def edit_profile():
     form = EditProfileForm()
@@ -103,6 +84,7 @@ def edit_profile_admin(id):
     form.about_me.data = user.about_me
     return render_template('edit_profile.html', form=form, user=user)
 
+
 @main.route('/post/<int:id>', methods=['GET', 'POST'])
 def post(id):
     post = Post.query.get_or_404(id)
@@ -118,13 +100,14 @@ def post(id):
     page = request.args.get('page', 1, type=int)
     if page == -1:
         page = (post.comments.count() - 1) // \
-            current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
+               current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
     pagination = post.comments.order_by(Comment.timestamp.asc()).paginate(
         page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
         error_out=False)
     comments = pagination.items
     return render_template('post_test.html', post=post, form=form,
                            comments=comments, pagination=pagination)
+
 
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -142,6 +125,7 @@ def edit(id):
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
+
 
 @main.route('/follow/<username>')
 @login_required
@@ -176,6 +160,7 @@ def unfollow(username):
     flash('You are not following %s anymore.' % username)
     return redirect(url_for('.user', username=username))
 
+
 @main.route('/followers/<username>')
 def followers(username):
     user = User.query.filter_by(username=username).first()
@@ -191,6 +176,7 @@ def followers(username):
     return render_template('followers.html', user=user, title="Followers of",
                            endpoint='.followers', pagination=pagination,
                            follows=follows)
+
 
 @main.route('/followed_by/<username>')
 def followed_by(username):
@@ -208,11 +194,12 @@ def followed_by(username):
                            endpoint='.followed_by', pagination=pagination,
                            follows=follows)
 
+
 @main.route('/all')
 @login_required
 def show_all():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
+    resp.set_cookie('show_followed', '', max_age=30 * 24 * 60 * 60)
     return resp
 
 
@@ -220,8 +207,9 @@ def show_all():
 @login_required
 def show_followed():
     resp = make_response(redirect(url_for('.index')))
-    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
+    resp.set_cookie('show_followed', '1', max_age=30 * 24 * 60 * 60)
     return resp
+
 
 @main.route('/moderate')
 @login_required
@@ -233,7 +221,8 @@ def moderate():
         error_out=False)
     comments = pagination.items
     return render_template('moderate.html', comments=comments,
-                            pagination=pagination, page=page)
+                           pagination=pagination, page=page)
+
 
 @main.route('/moderate/enable/<int:id>')
 @login_required
@@ -246,15 +235,16 @@ def moderate_enable(id):
                             page=request.args.get('page', 1, type=int)))
 
 
-@main.route('/moderate/disable/<int:id>')
+@main.route('/moderate/disable/', methods=['GET', 'POST'])
 @login_required
-@permission_required(Permission.MODERATE)
-def moderate_disable(id):
+def moderate_disable():
+    id = request.args.get('id', type=int)
     comment = Comment.query.get_or_404(id)
     comment.disabled = True
     db.session.add(comment)
-    return redirect(url_for('.moderate',
-                            page=request.args.get('page', 1, type=int)))
+    db.session.commit()
+    return redirect(url_for('.post', id=request.args.get('post_id', type=int)))
+
 
 @main.route('/new/thread', methods=['GET', 'POST'])
 @login_required
@@ -262,12 +252,13 @@ def new_thread():
     form = ThreadForm()
     if current_user.can(Permission.WRITE) and form.validate_on_submit():
         post = Post(body=form.body.data, title=form.title.data,
-                    scene=form.scene.data,type=form.type,
+                    scene=form.scene.data, type=form.type,
                     author=current_user._get_current_object())
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('.index'))
     return render_template('new_thread.html', form=form)
+
 
 @main.route('/new/link', methods=['GET', 'POST'])
 @login_required
@@ -280,3 +271,24 @@ def new_link():
         db.session.commit()
         return redirect(url_for('.index'))
     return render_template('new_link.html', form=form)
+
+
+@main.route('/scenes', methods=['GET', 'POST'])
+def scenes():
+    scenes = Scene.query.order_by(Scene.id)
+    return render_template('scenes.html', scenes=scenes)
+
+
+@main.route('/grooves', methods=['GET', 'POST'])
+def grooves():
+    pass
+
+
+@main.route('/new/scene', methods=['GET', 'POST'])
+def new_scene():
+    pass
+
+
+@main.route('/new/groove', methods=['GET', 'POST'])
+def new_grooves():
+    pass

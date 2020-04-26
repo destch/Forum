@@ -5,6 +5,7 @@
 {% block title %}Flasky - Post{% endblock %}
 
 {% block page_content %}
+<br>
 <div>
     {% if current_user.can(Permission.WRITE) %}
     {{ wtf.quick_form(form) }}
