@@ -16,6 +16,8 @@ class Config:
     FLASKY_POSTS_PER_PAGE = 10
     FLASKY_FOLLOWERS_PER_PAGE = 100
     FLASKY_COMMENTS_PER_PAGE = 50
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024
+
 
     @staticmethod
     def init_app(app):

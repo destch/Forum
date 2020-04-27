@@ -17,6 +17,7 @@ moment = Moment()
 db = SQLAlchemy()
 pagedown = PageDown()
 
+
 def create_app(config_name):
     app = Flask(__name__)
     app.debug = True
@@ -30,6 +31,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)
+
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 

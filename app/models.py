@@ -94,6 +94,7 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
+    profile_pic_filename = db.Column(db.String)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
@@ -299,6 +300,7 @@ class Post(db.Model):
     scene_id = db.Column(db.Integer, db.ForeignKey('scenes.id'))
     link = db.Column(db.Text)
     type = db.Column(db.Text)
+    thumbnail_file = db.Column(db.String)
 
 
     @staticmethod
@@ -388,4 +390,5 @@ class Scene(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    category = db.Column(db.String)
     posts = db.relationship('Post', backref='scene', lazy='dynamic')

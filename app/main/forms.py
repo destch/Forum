@@ -6,14 +6,11 @@ from wtforms import ValidationError
 from ..models import Role, User
 
 
-
-
-
 # forms section
 class ThreadForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(0, 256)])
     body = TextAreaField('Body', render_kw={'class': 'form-control', 'rows': 5})
-    scene = SelectField(u'Post to Scene (Optional)', choices=[('',''),('Los Angeles', 'Los Angeles'), ('NYC', 'NYC'),
+    scene = SelectField(u'Post to Scene (Optional)', choices=[('', ''), ('Los Angeles', 'Los Angeles'), ('NYC', 'NYC'),
                                                               ('Chicago', 'Chicago')])
     type = 'thread'
     image = FileField('Post Thumbnail (Optional)')
@@ -22,13 +19,14 @@ class ThreadForm(FlaskForm):
 
 # forms section
 class LinkForm(FlaskForm):
-    link = StringField('Link', validators=[DataRequired()])
     title = StringField('Title', validators=[DataRequired(), Length(0, 256)])
     body = TextAreaField('Body (Optional)', render_kw={'class': 'form-control', 'rows': 5})
-    scene = SelectField(u'Post to Scene (Optional)', choices=[('',''),('Los Angeles', 'Los Angeles'), ('NYC', 'NYC'),
+    link = StringField('Link (Optional) (e.g. Youtube and Soundcloud links) ', validators=[DataRequired()])
+    image = FileField('Upload an Image (Optional)')
+    scene = SelectField(u'Post to Scene (Optional)', choices=[('General', 'General'), ('Los Angeles', 'Los Angeles'), ('NYC', 'NYC'),
                                                               ('Chicago', 'Chicago')])
     type = 'link'
-    image = FileField('Post Thumbnail (Optional)')
+
     submit = SubmitField('Submit')
 
 
@@ -71,5 +69,10 @@ class EditProfileForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-    body = TextAreaField('',render_kw={'class': 'form-control', 'rows': 3})
+    body = TextAreaField('', render_kw={'class': 'form-control', 'rows': 3})
+    submit = SubmitField('Submit')
+
+
+class SearchForm(FlaskForm):
+    text = StringField('')
     submit = SubmitField('Submit')

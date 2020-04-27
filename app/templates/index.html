@@ -24,20 +24,17 @@
 
     <!-- Search Widget -->
     <div class="card my-4">
-      <h5 class="card-header">Search</h5>
-      <div class="card-body">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for posts...">
-          <span class="input-group-btn">
-            <button class="btn btn-secondary" type="button">Go!</button>
-          </span>
-        </div>
+      <h5 class="card-header">Search for posts...</h5>
+      <div class="card-body" style="padding-top:0em">
+          {{ wtf.quick_form(form) }}
       </div>
     </div>
 
     <!-- Categories Widget -->
     <div class="card my-4">
-      <h5 class="card-header">Top Scenes</h5>
+      <h5 class="card-header">Top Scenes
+          <button style="float: right;" ><a style="color: black" href="{{ url_for('main.scenes') }}">Browse All</a></button>
+      </h5>
       <div class="card-body">
         <div class="row">
           <div class="col-lg-6">
@@ -49,20 +46,20 @@
                 <a href="#">Chicago</a>
               </li>
               <li>
-                <a href="#">Los Angeles</a>
+                <a href="#">Berlin</a>
               </li>
             </ul>
           </div>
           <div class="col-lg-6">
             <ul class="list-unstyled mb-0">
               <li>
-                <a href="#">Berlin</a>
+                <a href="#">Deep House</a>
               </li>
               <li>
-                <a href="#">London</a>
+                <a href="#">Techno</a>
               </li>
               <li>
-                <a href="#">Amsterdam</a>
+                <a href="#",>Track IDs</a>
               </li>
             </ul>
           </div>

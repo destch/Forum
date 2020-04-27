@@ -1,31 +1,19 @@
 scenes view
-    -a table which lists the scenes as well as posts and users associated with the scene, date of last post
     -a button which let a user add a new scene
         -if scene is already in database (same spelling, then flash an error message)
 
-grooves view
-    -a table which lists the grooves as well as posts and users associated with the groove, date of last post
-    -a button which let a user add a new groove
-        -if groove is already in database (same spelling, then flash an error message)
-
-new thread/link view
-    -find a way to let users decide between tagging their post with a scene or a groove
-
-home view
-    -find a way to display the user uploaded thumbnails
-    -make the sidebar search functional
-
-posts view
-    #make comment section look good
-        -try and implement comment replies up to one level
 
 profile view
-    -use initial stock profile photo then let users upload their own profile photos
+    #use initial stock profile photo
+    -let users upload their own profile photos
 
 General/Deployment
-    -configure S3 for file uploads
+    -deploy
 
-
-
-
+-make thumbnail photos show up on post page
+- no link posts, just ability to upload thumbnals
+- option to embed media links (youtube, sc) if this field is there then make it a link post default, else the scroll
+-display posts and comments on users accounts where they can go delete
+-currently when a new post is submitted, since hte scene column changed to scene id, they arent being submitted to the right scene
+-either submit a link
 github token: 8a2e693cb796484f601b9e99b8cd928255a5bfe2

@@ -17,16 +17,30 @@
       <th scope="col">#</th>
       <th scope="col">City</th>
       <th scope="col">Posts This Month</th>
-      <th scope="col">Users</th>
     </tr>
   </thead>
   <tbody>
-  {% for scene in scenes %}
+  {% for city in cities %}
     <tr>
-      <th scope="row">{{scene.id}}</th>
-      <td><a>{{scene.name}}</a></td>
-      <td>{{scene.posts.count()}}</td>
-      <td>{{scene.name}}</td>
+      <th scope="row">{{loop.index}}</th>
+      <td><a href="{{ url_for('main.scene', id=city.id) }}">{{city.name}}</a></td>
+      <td>{{city.posts.count()}}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Topic</th>
+      <th scope="col">Posts This Month</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for topic in topics %}
+    <tr>
+      <th scope="row">{{loop.index}}</th>
+      <td><a href="{{ url_for('main.scene', id=topic.id) }}">{{topic.name}}</a></td>
+      <td>{{topic.posts.count()}}</td>
     </tr>
   {% endfor %}
   </tbody>

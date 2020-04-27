@@ -1,12 +1,14 @@
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, jsonify, flash, request, current_app, make_response
 from . import main
-from .forms import ThreadForm, LinkForm, EditProfileAdminForm, EditProfileForm, CommentForm
+from .forms import ThreadForm, LinkForm, EditProfileAdminForm, EditProfileForm, CommentForm, SearchForm
 from .. import db
 from ..models import Post, Comment, User, Permission, Scene
 import json
 from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
+import boto3
 
 
 @main.route('/user/<username>')
@@ -20,6 +22,10 @@ def user(username):
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    form = SearchForm()
+    if form.validate_on_submit():
+        text = form.text.data
+        return redirect(url_for('.results', text=text))
     page = request.args.get('page', 1, type=int)
     show_followed = False
     if current_user.is_authenticated:
@@ -33,10 +39,37 @@ def index():
         error_out=False)
     posts = pagination.items
     return render_template('index.html', posts=posts,
-                           show_followed=show_followed, pagination=pagination)
+                           show_followed=show_followed, pagination=pagination, form=form)
 
 
+@main.route('/<int:id>/posts', methods=['GET', 'POST'])
+def scene(id):
+    form = SearchForm()
+    if form.validate_on_submit():
+        text = form.text.data
+        return redirect(url_for('.results', text=text))
+    page = request.args.get('page', 1, type=int)
+    query = Post.query.filter_by(scene_id=id)
+    pagination = query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('scene.html', posts=posts, pagination=pagination, form=form)
 
+
+@main.route('/results/<text>', methods=['GET', 'POST'])
+def results(text):
+    form = SearchForm()
+    if form.validate_on_submit():
+        text = form.text.data
+        return redirect(url_for('.results', text=text))
+    page = request.args.get('page', 1, type=int)
+    query = Post.query.filter(Post.title.ilike('%'+text+'%'))
+    pagination = query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('results.html', posts=posts, pagination=pagination, form=form)
 
 
 @main.route('/edit-profile', methods=['Get', 'Post'])
@@ -265,7 +298,17 @@ def new_thread():
 def new_link():
     form = LinkForm()
     if current_user.can(Permission.WRITE) and form.validate_on_submit():
-        post = Post(body=form.body.data,
+        f = form.image.data
+        filename = ''
+        if f is not None:
+            post_id = Post.query.order_by(Post.id.desc()).first().id
+            filename = str(post_id) + secure_filename(f.filename)
+            s3_client = boto3.resource('s3')
+            bucket = s3_client.Bucket('groovespotimages')
+            bucket.Object(filename).put(Body=f)
+
+        post = Post(body=form.body.data, title=form.title.data,
+                    scene_id=1, type=form.type, thumbnail_file=filename, link=form.link.data,
                     author=current_user._get_current_object())
         db.session.add(post)
         db.session.commit()
@@ -275,20 +318,11 @@ def new_link():
 
 @main.route('/scenes', methods=['GET', 'POST'])
 def scenes():
-    scenes = Scene.query.order_by(Scene.id)
-    return render_template('scenes.html', scenes=scenes)
-
-
-@main.route('/grooves', methods=['GET', 'POST'])
-def grooves():
-    pass
+    cities = Scene.query.filter_by(category='City').order_by(Scene.id).all()
+    topics = Scene.query.filter_by(category='Topic').order_by(Scene.id).all()
+    return render_template('scenes.html', cities=cities, topics=topics)
 
 
 @main.route('/new/scene', methods=['GET', 'POST'])
 def new_scene():
-    pass
-
-
-@main.route('/new/groove', methods=['GET', 'POST'])
-def new_grooves():
     pass

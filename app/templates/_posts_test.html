@@ -7,7 +7,11 @@
                 {% if post.type == 'thread' %}
                     <img class="card-image" src="../static/thread.jpg" >
                 {% else %}
+                    {% if post.thumbnail_file %}
+                    <img class="card-image" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
+                    {% else %}
                     <img class="card-image" src="../static/link.jpg" >
+                    {% endif %}
                 {% endif %}
 
             </div>

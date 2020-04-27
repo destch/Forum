@@ -50,8 +50,14 @@
     {% if post.type == 'thread' %}
 
     {% else %}
-    <hr>
-        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+    {% if post.thumbnail_file %}
+    <img id="post-img" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
+    {% else %}
+    <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/jZEOzqaoFx0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    {% endif %}
+
     {% endif %}
 
 
