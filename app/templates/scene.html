@@ -8,13 +8,19 @@
 <div class="row">
     <div class="col-lg-8">
         <div class="post-tabs">
+            {% if posts[0] %}
     <h2 >{{posts[0].scene.name}}</h2>
+            {% else %}
+            <h2>No Posts</h2>
+            {% endif %}
 </div>
         <div class="post-tabs">
     {% include '_posts_test.html' %}
                  {% if pagination %}
 <div class="pagination">
+    {% if posts[0] %}
     {{ macros.pagination_widget(pagination, '.scene', id=posts[0].scene_id) }}
+    {% endif %}
 </div>
 {% endif %}
 </div>

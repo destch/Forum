@@ -288,6 +288,17 @@ def moderate_disable():
     return redirect(url_for('.post', id=request.args.get('post_id', type=int)))
 
 
+@main.route('/moderate/disable/post', methods=['GET', 'POST'])
+@login_required
+def moderate_disable_post():
+    id = request.args.get('id', type=int)
+    post = Post.query.get_or_404(id)
+    post.disabled = True
+    db.session.add(post)
+    db.session.commit()
+    return redirect(url_for('.index'))
+
+
 @main.route('/new/thread', methods=['GET', 'POST'])
 @login_required
 def new_thread():

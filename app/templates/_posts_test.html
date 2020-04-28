@@ -1,6 +1,7 @@
 
 <ul class="posts">
     {% for post in posts %}
+    {% if post.disabled != 1 %}
     <li class="post">
         <a href="{{ url_for('.post', id=post.id) }}" class="card flex-row flex-wrap" id="post-cards-clickable">
             <div class="col-md-4" id="post-card-img">
@@ -22,6 +23,8 @@
                     <span class="card-author">By: {{ post.author.username }}</span>
                     <span class="card-date">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
                     <span class="card-comments">{{ post.comments.count() }} Comments</span>
+
+
                 </div>
 
 
@@ -30,6 +33,7 @@
         </a>
 
     </li>
+    {% endif %}
     {% endfor %}
 </ul>
 

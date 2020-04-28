@@ -108,6 +108,7 @@ class User(UserMixin, db.Model):
                                 cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
+
     @staticmethod
     def add_self_follows():
         for user in User.query.all():
@@ -301,6 +302,7 @@ class Post(db.Model):
     link = db.Column(db.Text)
     type = db.Column(db.Text)
     thumbnail_file = db.Column(db.String)
+    disabled = db.Column(db.Boolean)
 
 
     @staticmethod

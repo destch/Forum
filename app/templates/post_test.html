@@ -41,7 +41,11 @@
 
 
     <!-- Date/Time -->
-
+    {% if current_user.can(Permission.MODERATE) or current_user.id == post.author.id %}
+                    {% if post.disabled != 1 %}
+                    <a class="btn btn-danger btn-xs"  href="{{ url_for('.moderate_disable_post', id=post.id, post_id = post.id) }}">Delete</a>
+                    {% endif %}
+                    {% endif %}
 
 
 
