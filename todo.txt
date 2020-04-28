@@ -1,19 +1,8 @@
-scenes view
-    -a button which let a user add a new scene
-        -if scene is already in database (same spelling, then flash an error message)
 
 
-profile view
-    #use initial stock profile photo
-    -let users upload their own profile photos
-
-General/Deployment
-    -deploy
-
--make thumbnail photos show up on post page
-- no link posts, just ability to upload thumbnals
-- option to embed media links (youtube, sc) if this field is there then make it a link post default, else the scroll
 -display posts and comments on users accounts where they can go delete
--currently when a new post is submitted, since hte scene column changed to scene id, they arent being submitted to the right scene
--either submit a link
+
+
+
 github token: 8a2e693cb796484f601b9e99b8cd928255a5bfe2
+

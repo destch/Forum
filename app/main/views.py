@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, jsonify, flash, request, current_app, make_response
 from . import main
-from .forms import ThreadForm, LinkForm, EditProfileAdminForm, EditProfileForm, CommentForm, SearchForm
+from .forms import ThreadForm, LinkForm, EditProfileAdminForm, EditProfileForm, CommentForm, SearchForm, SceneForm
 from .. import db
 from ..models import Post, Comment, User, Permission, Scene
 import json
@@ -64,7 +64,7 @@ def results(text):
         text = form.text.data
         return redirect(url_for('.results', text=text))
     page = request.args.get('page', 1, type=int)
-    query = Post.query.filter(Post.title.ilike('%'+text+'%'))
+    query = Post.query.filter(Post.title.ilike('%' + text + '%'))
     pagination = query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
@@ -72,11 +72,20 @@ def results(text):
     return render_template('results.html', posts=posts, pagination=pagination, form=form)
 
 
-@main.route('/edit-profile', methods=['Get', 'Post'])
+@main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
+        f = form.image.data
+        filename = ''
+        if f is not None:
+            user_id = current_user.id
+            filename = str(user_id) + secure_filename(f.filename)
+            s3_client = boto3.resource('s3')
+            bucket = s3_client.Bucket('groovespotimages')
+            bucket.Object(filename).put(Body=f)
+        current_user.profile_pic_filename = filename
         current_user.name = form.name.data
         current_user.location = form.location.data
         current_user.about_me = form.about_me.data
@@ -307,8 +316,23 @@ def new_link():
             bucket = s3_client.Bucket('groovespotimages')
             bucket.Object(filename).put(Body=f)
 
+        # youtube
+        if 'youtube.com' in form.link.data:
+            link_noquery = str(form.link.data).split('&')[0]
+            link = link_noquery.split('watch?v=')
+            link_embed = 'embed/'.join(link)
+            link_html = \
+                '''
+                <div class="video-container">
+                <iframe width="560" height="315" src="{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                '''.format(link_embed)
+
+        else:
+            link_html = '<div><a href=\"' + form.link.data + '\">' + form.link.data + '</a></div>'
+
         post = Post(body=form.body.data, title=form.title.data,
-                    scene_id=1, type=form.type, thumbnail_file=filename, link=form.link.data,
+                    scene_id=form.scene.data.id, type=form.type, thumbnail_file=filename, link=link_html,
                     author=current_user._get_current_object())
         db.session.add(post)
         db.session.commit()
@@ -325,4 +349,14 @@ def scenes():
 
 @main.route('/new/scene', methods=['GET', 'POST'])
 def new_scene():
-    pass
+    form = SceneForm()
+    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+        if Scene.query.filter(Scene.name == form.name.data).all() == []:
+            scene = Scene(name=form.name.data, category=form.category.data)
+            db.session.add(scene)
+            db.session.commit()
+            return redirect(url_for('.scenes'))
+        else:
+            flash('That scene already exists!')
+            return redirect(url_for('.new_scene'))
+    return render_template('new_scene.html', form=form)

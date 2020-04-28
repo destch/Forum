@@ -4,15 +4,14 @@
     <li class="post">
         <a href="{{ url_for('.post', id=post.id) }}" class="card flex-row flex-wrap" id="post-cards-clickable">
             <div class="col-md-4" id="post-card-img">
-                {% if post.type == 'thread' %}
-                    <img class="card-image" src="../static/thread.jpg" >
-                {% else %}
                     {% if post.thumbnail_file %}
                     <img class="card-image" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
-                    {% else %}
+                    {% elif post.link %}
                     <img class="card-image" src="../static/link.jpg" >
+                    {% else %}
+                     <img class="card-image" src="../static/thread.jpg" >
                     {% endif %}
-                {% endif %}
+
 
             </div>
             <div class="col-md-8">

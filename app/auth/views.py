@@ -5,8 +5,10 @@ from . import auth
 from .. import db
 from ..models import User
 from ..email import send_email
-from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
+from .forms import LoginForm, RegistrationForm, ChangePasswordForm, \
     PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
+from werkzeug.utils import secure_filename
+import boto3
 
 
 @auth.before_app_request
@@ -54,16 +56,25 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        f = form.image.data
+        filename = ''
+        if f.filename != '':
+            user_id = User.query.order_by(User.id.desc()).first().id + 1
+            filename = str(user_id) + secure_filename(f.filename)
+            s3_client = boto3.resource('s3')
+            bucket = s3_client.Bucket('groovespotimages')
+            bucket.Object(filename).put(Body=f)
+        else:
+            filename = 'profile-img.png'
+
         user = User(email=form.email.data.lower(),
                     username=form.username.data,
-                    password=form.password.data)
+                    password=form.password.data,
+                    profile_pic_filename=filename)
         db.session.add(user)
         db.session.commit()
-        #token = user.generate_confirmation_token()
-        #send_email(user.email, 'Confirm Your Account',
-        #           'auth/email/confirm', user=user, token=token)
-        #flash('A confirmation email has been sent to you by email.')
         flash('Thanks for registering!')
+        login_user(user)
         return redirect(url_for('main.index'))
     return render_template('auth/register.html', form=form)
 

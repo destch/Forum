@@ -46,19 +46,19 @@
 
 
     <!-- Preview Image -->
-
-    {% if post.type == 'thread' %}
-
-    {% else %}
-    {% if post.thumbnail_file %}
+    {% if post.thumbnail_file and post.link %}
+    <img id="post-img" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
+    {{ post.link | safe}}
+    {% elif post.link %}
+    <br>
+    <h4>Link:</h4>
+    {{ post.link |safe }}
+    {% elif post.thumbnail_file %}
     <img id="post-img" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
     {% else %}
-    <div class="video-container">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/jZEOzqaoFx0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-    {% endif %}
 
     {% endif %}
+
 
 
 
@@ -88,7 +88,7 @@
     {% for comment in comments %}
     <div class="comment-card">
     <div class="media mb-4">
-      <img class="d-flex mr-3 rounded-circle" src="../static/profile-img.png" height="40" width="40">
+      <img class="d-flex mr-3" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ comment.author.profile_pic_filename}} height="40" width="40">
       <div class="media-body">
         <div class="comment-date">{{ moment(comment.timestamp).fromNow() }}</div>
             <div class="comment-author"><a href="{{ url_for('.user', username=comment.author.username) }}">{{ comment.author.username }}</a></div>

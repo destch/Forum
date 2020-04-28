@@ -40,7 +40,7 @@
                 {% if current_user.is_authenticated %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="../static/profile-img.png" height="18" width="18">
+                        <img src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ current_user.profile_pic_filename}} height="18" width="18">
                         Account <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">

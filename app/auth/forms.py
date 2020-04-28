@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, FileField
 from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from ..models import User
@@ -24,6 +24,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
+    image = FileField('Upload a Profile Picture (Optional)')
     submit = SubmitField('Register')
 
     def validate_email(self, field):

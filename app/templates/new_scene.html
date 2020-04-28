@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Groove Spot{% endblock %}
+
+{% block page_content %}
+<br>
+<h3>Create a New Scene</h3>
+<div>
+    {% if current_user.can(Permission.WRITE) %}
+    {{ wtf.quick_form(form) }}
+
+
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
