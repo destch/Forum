@@ -78,14 +78,13 @@ def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
         f = form.image.data
-        filename = ''
         if f is not None:
             user_id = current_user.id
             filename = str(user_id) + secure_filename(f.filename)
             s3_client = boto3.resource('s3')
             bucket = s3_client.Bucket('groovespotimages')
             bucket.Object(filename).put(Body=f)
-        current_user.profile_pic_filename = filename
+            current_user.profile_pic_filename = filename
         current_user.name = form.name.data
         current_user.location = form.location.data
         current_user.about_me = form.about_me.data
@@ -340,7 +339,7 @@ def new_link():
                 '''.format(link_embed)
 
         else:
-            link_html = '<div><a href=\"' + form.link.data + '\">' + form.link.data + '</a></div>'
+            link_html = form.link.data
 
         post = Post(body=form.body.data, title=form.title.data,
                     scene_id=form.scene.data.id, type=form.type, thumbnail_file=filename, link=link_html,
