@@ -56,7 +56,7 @@
     {% elif post.link %}
     <br>
     <h4>Link:</h4>
-    <div><a href={{post.link}}> + post.link + </a></div>
+    <div><a href={{post.link}}> {{post.link}} </a></div>
     {% elif post.thumbnail_file %}
     <img id="post-img" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
     {% else %}
