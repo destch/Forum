@@ -22,6 +22,7 @@ Flask-S3==0.3.3
 Flask-SQLAlchemy==2.4.1
 Flask-Uploads==0.2.1
 Flask-WTF==0.14.3
+gunicorn==20.0.4
 httpie==2.0.0
 idna==2.9
 itsdangerous==1.1.0
@@ -30,6 +31,7 @@ jmespath==0.9.5
 Mako==1.1.0
 Markdown==3.2.1
 MarkupSafe==1.1.1
+pkg-resources==0.0.0
 Pygments==2.6.1
 python-dateutil==2.8.1
 python-editor==1.0.4
