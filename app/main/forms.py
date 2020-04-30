@@ -76,12 +76,12 @@ class EditProfileForm(FlaskForm):
 
 class CommentForm(FlaskForm):
     body = TextAreaField('', render_kw={'class': 'form-control', 'rows': 3})
-    submit = SubmitField('Submit')
+    submit_comment = SubmitField('Submit')
 
 
 class SearchForm(FlaskForm):
     text = StringField('')
-    submit = SubmitField('Submit')
+    submit_search = SubmitField('Submit')
 
 
 class SceneForm(FlaskForm):

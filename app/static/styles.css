@@ -804,6 +804,14 @@ color: white;
 background-color: #337ab7;
 color: white;
 }
+#submit_comment{
+background-color: #337ab7;
+color: white;
+}
+#submit_search{
+background-color: #337ab7;
+color: white;
+}
 
 .comment-author{
 margin-bottom: 5px;

@@ -22,9 +22,9 @@ def user(username):
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    form = SearchForm()
-    if form.validate_on_submit():
-        text = form.text.data
+    search_form = SearchForm()
+    if search_form.validate_on_submit():
+        text = search_form.text.data
         return redirect(url_for('.results', text=text))
     page = request.args.get('page', 1, type=int)
     show_followed = False
@@ -39,7 +39,7 @@ def index():
         error_out=False)
     posts = pagination.items
     return render_template('index.html', posts=posts,
-                           show_followed=show_followed, pagination=pagination, form=form)
+                           show_followed=show_followed, pagination=pagination, search_form=search_form)
 
 
 @main.route('/<int:id>/posts', methods=['GET', 'POST'])
@@ -129,15 +129,25 @@ def edit_profile_admin(id):
 @main.route('/post/<int:id>', methods=['GET', 'POST'])
 def post(id):
     post = Post.query.get_or_404(id)
-    form = CommentForm()
-    if form.validate_on_submit():
-        comment = Comment(body=form.body.data,
-                          post=post,
-                          author=current_user._get_current_object())
-        db.session.add(comment)
-        db.session.commit()
-        flash('Your comment has been published.')
-        return redirect(url_for('.post', id=post.id, page=-1))
+    result = None
+    comment_form = None
+    search_form = None
+
+    if "submit_comment" in request.form:
+        comment_form = CommentForm()
+        result = process_comment_form(comment_form, post)
+    elif "submit_search" in request.form:
+        search_form = SearchForm()
+        result = process_search_form(search_form)
+
+    if result is not None:
+        return result
+
+    if comment_form is None:
+        comment_form = CommentForm(formadata=None, obj=...)
+    if search_form is None:
+        search_form = SearchForm(formdata=None, obj=...)
+
     page = request.args.get('page', 1, type=int)
     if page == -1:
         page = (post.comments.count() - 1) // \
@@ -146,8 +156,25 @@ def post(id):
         page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
         error_out=False)
     comments = pagination.items
-    return render_template('post_test.html', post=post, form=form,
+    return render_template('post_test.html', post=post, comment_form=comment_form, search_form=search_form,
                            comments=comments, pagination=pagination)
+
+def process_comment_form(comment_form,post):
+    if comment_form.validate_on_submit():
+        comment = Comment(body=comment_form.body.data,
+                          post=post,
+                          author=current_user._get_current_object())
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been published.')
+        return redirect(url_for('.post', id=post.id, page=-1))
+
+
+def process_search_form(search_form):
+    if search_form.validate_on_submit():
+        text = search_form.text.data
+        return redirect(url_for('.results', text=text))
+
 
 
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
