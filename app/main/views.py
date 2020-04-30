@@ -9,7 +9,7 @@ from ..decorators import admin_required, permission_required
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import boto3
-
+from sqlalchemy import or_
 
 @main.route('/user/<username>')
 def user(username):
@@ -64,7 +64,9 @@ def results(text):
         text = form.text.data
         return redirect(url_for('.results', text=text))
     page = request.args.get('page', 1, type=int)
-    query = Post.query.filter(Post.title.ilike('%' + text + '%'))
+    query = Post.query.join(Scene).filter(or_(Post.title.ilike('%' + text + '%'),
+                              Post.body.ilike('%' + text + '%'),
+                              Scene.name.ilike('%' + text + '%')))
     pagination = query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
