@@ -858,3 +858,6 @@ margin-left: 5px;
     height: 100%;
     margin-top: 20px;
 }
+.navbar-inverse{
+border-radius:0 !important;
+}

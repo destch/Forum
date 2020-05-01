@@ -54,7 +54,7 @@ def scene(id):
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('scene.html', posts=posts, pagination=pagination, form=form)
+    return render_template('scene.html', posts=posts, pagination=pagination, search_form=form)
 
 
 @main.route('/results/<text>', methods=['GET', 'POST'])
@@ -71,7 +71,7 @@ def results(text):
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('results.html', posts=posts, pagination=pagination, form=form)
+    return render_template('results.html', posts=posts, pagination=pagination, search_form=form)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
@@ -381,9 +381,13 @@ def new_link():
 
 @main.route('/scenes', methods=['GET', 'POST'])
 def scenes():
+    form=SearchForm()
+    if form.validate_on_submit():
+        text = form.text.data
+        return redirect(url_for('.results', text=text))
     cities = Scene.query.filter_by(category='City').order_by(Scene.id).all()
     topics = Scene.query.filter_by(category='Topic').order_by(Scene.id).all()
-    return render_template('scenes.html', cities=cities, topics=topics)
+    return render_template('scenes.html', cities=cities, topics=topics, search_form=form)
 
 
 @main.route('/new/scene', methods=['GET', 'POST'])
@@ -391,7 +395,7 @@ def new_scene():
     form = SceneForm()
     if current_user.can(Permission.WRITE) and form.validate_on_submit():
         if Scene.query.filter(Scene.name == form.name.data).all() == []:
-            scene = Scene(name=form.name.data, category=form.category.data)
+            scene = Scene(name=form.name.data, category=form.category.data, description=form.description.data)
             db.session.add(scene)
             db.session.commit()
             return redirect(url_for('.scenes'))

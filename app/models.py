@@ -393,4 +393,5 @@ class Scene(db.Model):
     name = db.Column(db.String(128))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     category = db.Column(db.String)
+    description = db.Column(db.Text)
     posts = db.relationship('Post', backref='scene', lazy='dynamic')
