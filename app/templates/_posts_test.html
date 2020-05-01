@@ -3,7 +3,7 @@
     {% for post in posts %}
     {% if post.disabled != 1 %}
     <li class="post">
-        <a href="{{ url_for('.post', id=post.id) }}" class="card flex-row flex-wrap" id="post-cards-clickable">
+        <div  class="card flex-row flex-wrap" id="post-cards-clickable">
             <div class="col-md-4" id="post-card-img">
                     {% if post.thumbnail_file %}
                     <img class="card-image" src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ post.thumbnail_file}} >
@@ -17,11 +17,11 @@
 
             </div>
             <div class="col-md-8">
-                <p id="scene">{% if post.scene.name %} {{post.scene.name}} {% else %} General {% endif %}</p>
-                <h4 class="card-title">{{post.title}}</h4>
+                <p id="scene"><a href="{{ url_for('.scene', id=post.scene_id) }}" style="color:black;">{% if post.scene.name %} {{post.scene.name}} {% else %} General {% endif %}</a></p>
+                <h4 class="card-title"><a href="{{ url_for('.post', id=post.id) }}" style="color:black;">{{post.title}}</a></h4>
                 <p class="card-text">{{ post.body}}</p>
                 <div class="card-bottom">
-                    <span class="card-author">By: {{ post.author.username }}</span>
+                    <span class="card-author"> <a href="{{ url_for('.user', username=post.author.username) }}" style="color:black;">By: {{ post.author.username }}</a></span>
                     <span class="card-date">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
                     <span class="card-comments">{{ post.comments.count() }} Comments</span>
 
@@ -31,7 +31,7 @@
 
             </div>
             <div class="w-100"></div>
-        </a>
+        </div>
 
     </li>
     {% endif %}
