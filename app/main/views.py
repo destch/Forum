@@ -10,6 +10,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import boto3
 from sqlalchemy import or_
+from flask_login import login_user, logout_user
 
 @main.route('/user/<username>')
 def user(username):
@@ -163,9 +164,17 @@ def post(id):
 
 def process_comment_form(comment_form,post):
     if comment_form.validate_on_submit():
+        if current_user.__repr__() =='Anonymous':
+            user = User.query.filter_by(username='Anonymous').first()
+            login_user(user)
+            author = current_user._get_current_object()
+            logout_user()
+        else:
+            author = current_user._get_current_object()
+
         comment = Comment(body=comment_form.body.data,
                           post=post,
-                          author=current_user._get_current_object())
+                          author=author)
         db.session.add(comment)
         db.session.commit()
         flash('Your comment has been published.')
@@ -342,10 +351,10 @@ def new_thread():
 
 
 @main.route('/new/link', methods=['GET', 'POST'])
-@login_required
 def new_link():
     form = LinkForm()
-    if current_user.can(Permission.WRITE) and form.validate_on_submit():
+    #if current_user.can(Permission.WRITE) and form.validate_on_submit():
+    if form.validate_on_submit():
         f = form.image.data
         filename = ''
         if f is not None:
@@ -370,11 +379,20 @@ def new_link():
         else:
             link_html = form.link.data
 
+        if current_user.__repr__() =='Anonymous':
+            user = User.query.filter_by(username='Anonymous').first()
+            login_user(user)
+            author = current_user._get_current_object()
+            logout_user()
+        else:
+            author = current_user._get_current_object()
+
         post = Post(body=form.body.data, title=form.title.data,
                     scene_id=form.scene.data.id, type=form.type, thumbnail_file=filename, link=link_html,
-                    author=current_user._get_current_object())
+                    author=author)
         db.session.add(post)
         db.session.commit()
+
         return redirect(url_for('.index'))
     return render_template('new_link.html', form=form)
 

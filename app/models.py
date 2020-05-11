@@ -280,6 +280,9 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+    def __repr__(self):
+        return 'Anonymous'
+
 
 login_manager.anonymous_user = AnonymousUser
 

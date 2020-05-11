@@ -29,6 +29,7 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="{{ url_for('main.new_link') }}">New Post</a></li>
                 {% if not current_user.is_authenticated %}
                 <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                 {% endif %}
@@ -36,7 +37,7 @@
 
 
                 {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('main.new_link') }}">New Post</a></li>
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src={{"https://groovespotimages.s3.us-east-2.amazonaws.com/" ~ current_user.profile_pic_filename}} height="18" width="18">
