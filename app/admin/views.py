@@ -3,6 +3,7 @@ from app import db, admin
 from app.models import User, Post, Comment, Scene
 from flask_login import current_user
 
+
 class MyModelView(ModelView):
     def is_accessible(self):
         return current_user.is_administrator()
