@@ -100,7 +100,7 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
-    profile_pic_filename = db.Column(db.String)
+    profile_pic_filename = db.Column(db.String, default='profile-img.png')
     posts = db.relationship("Post", backref="author", lazy="dynamic")
     followed = db.relationship(
         "Follow",
