@@ -5,16 +5,113 @@
 {% block title %}Groove Spot - Post{% endblock %}
 
 {% block page_content %}
-<br>
-<div>
 
-    {{ wtf.quick_form(form) }}
+<h3>Create a Post</h3>
+
+<div class="col-md-8">
+
+<form action="" method="post">
+
+	<div class="form-group">
+    <label for="exampleFormControlSelect1">Post to a Scene (Optional)</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>General</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+    </select>
+  </div>
+
+
+	<ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+		<li class="nav-item active">
+			<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" aria-expanded="true">
+				<i class="glyphicon glyphicon-comment"></i>
+				Post
+			</a>
+
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+				<i class="glyphicon glyphicon-picture"></i>
+				Image & Video
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">
+				<i class="glyphicon glyphicon-link"></i>
+				Link
+			</a>
+		</li>
+	</ul>
+
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+			<div class="container mt-4 mb-4">
+				<div class="row justify-content-md-center">
+					<div>
+						<div class="form-group">
+    						<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Title">
+    					</div>
+						<div class="form-group">
+							<textarea id="editor"></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+			<div class="container mt-4 mb-4">
+				<div class="row justify-content-md-center">
+						<div class="form-group">
+    						<input type="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Title">
+    					</div>
+    					<div class="form-group">  
+					        <label for="exampleFormControlFile1">Choose File</label>
+					        <input type="file" name="fileInput" class="form-control-file" id="exampleFormControlFile1" accept=".jpg,.png,.gif,.webp">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+			<div class="container mt-4 mb-4">
+				<div class="row justify-content-md-center">
+						<div class="form-group">
+    						<input type="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Title">
+    					</div>
+    					<div class="form-group">  
+
+    						<textarea class="form-control" id="exampleFormControlTextarea1" rows="2" placeholder="URL"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
 
 
 </div>
+
+
+
+
+
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.tiny.cloud/1/bhsc1ny0835o6971wqs7bnsz1uef59a56tlal1tdo07bp644/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: 'textarea#editor',
+    skin: 'bootstrap',
+    plugins: 'lists, link, image, media',
+    toolbar: 'h1 h2 bold italic strikethrough blockquote bullist numlist backcolor | link image media | removeformat help',
+    menubar: false
+  });
+</script>
+
 {{ super() }}
 {{ pagedown.include_pagedown() }}
 {% endblock %}
