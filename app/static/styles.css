@@ -5,13 +5,19 @@
     min-height: 260px;
     margin-left: 280px;
 }
+
+
+.nav-tabs > li > a {
+  color: #575757;
+}
+
 .nav-tabs{
-border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+border-bottom: 2px solid rgba(0, 0, 0, 0.5);
 
 }
 
 .nav-tabs>.active>a, .nav-tabs>.active>a:hover, .nav-tabs>.active>a:focus {
-    border-color: rgba(0, 0, 0, 0.5);
+    border-color: rgba(0, 0, 0, 1);
     border-bottom-color: transparent;
 }
 div.post-tabs {
@@ -861,3 +867,6 @@ margin-left: 5px;
 .navbar-inverse{
 border-radius:0 !important;
 }
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
