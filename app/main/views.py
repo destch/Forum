@@ -407,32 +407,75 @@ def new_thread():
 @main.route("/new/link", methods=["GET", "POST"])
 def new_link():
     form = LinkForm()
-    # if current_user.can(Permission.WRITE) and form.validate_on_submit():
-    if form.validate_on_submit():
-        f = form.image.data
-        filename = ""
-        if f is not None:
-            post_id = Post.query.order_by(Post.id.desc()).first().id
-            filename = str(post_id) + secure_filename(f.filename)
-            s3_client = boto3.resource("s3")
-            bucket = s3_client.Bucket("groovespotimages")
-            bucket.Object(filename).put(Body=f)
+    scenes = Scene.query.all()
+    if request.method == "POST":
+        req = lambda x: request.form.get(x)
+        if req('PostTitle') != '':
+            post = Post(title=req('PostTitle'),
+                        body=req('PostText'))
+        elif req('FileTitle') != '':
+            f = request.files['FileData']
+            filename = ""
+            if f is not None:
+                post_id = Post.query.order_by(Post.id.desc()).first().id
+                filename = str(post_id) + secure_filename(f.filename)
+                s3_client = boto3.resource("s3")
+                bucket = s3_client.Bucket("groovespotimages")
+                bucket.Object(filename).put(Body=f)
 
-        # youtube
-        if "youtube.com" in form.link.data:
-            link_noquery = str(form.link.data).split("&")[0]
-            link = link_noquery.split("watch?v=")
-            link_embed = "embed/".join(link)
-            link_html = """
-                <div class="video-container">
-                <iframe width="560" height="315" src="{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                """.format(
-                link_embed
-            )
+            post = Post(title=req('FileTitle'),
+                        thumbnail_file=filename)
+            
+
+        elif req('LinkTitle') != '':
+
+            if "youtube.com" in str(req('LinkUrl')):
+                link_noquery = str(req('LinkUrl')).split("&")[0]
+                link = link_noquery.split("watch?v=")
+                link_embed = "embed/".join(link)
+                link_html = """
+                    <div class="video-container">
+                    <iframe width="500" height="300" src="{}" frameborder="0" 
+                    allow="accelerometer; 
+                    autoplay; 
+                    encrypted-media; 
+                    gyroscope; 
+                    picture-in-picture" 
+                    allowfullscreen></iframe>
+                    </div>
+                    """.format(link_embed) 
+
+            elif "yout.be" in req('LinkUrl'):
+                link_embed = str(req('LinkUrl')).split('/')[3]
+                link_html = """
+                    <div class="video-container">
+                    <iframe width="500" height="300" src="{}" frameborder="0" 
+                    allow="accelerometer; 
+                    autoplay; 
+                    encrypted-media; 
+                    gyroscope; 
+                    picture-in-picture" 
+                    allowfullscreen></iframe>
+                    </div>
+                    """.format(link_embed)
+
+            elif "soundcloud" in req('LinkUrl'):
+                link_embed = str(req('LinkUrl'))
+                link_html = """
+                    <iframe width="500" height="200"
+                    src="https://w.soundcloud.com/player/?url={}">
+                    </iframe>
+                    """.format(link_embed)
+
+            else:
+                link_html = str(req('LinkUrl'))
+
+            post = Post(title=req('LinkTitle'),
+                        link=link_html)
 
         else:
-            link_html = form.link.data
+            flash('You must include a title')
+
 
         if current_user.__repr__() == "Anonymous":
             user = User.query.filter_by(username="Anonymous").first()
@@ -442,20 +485,14 @@ def new_link():
         else:
             author = current_user._get_current_object()
 
-        post = Post(
-            body=form.body.data,
-            title=form.title.data,
-            scene_id=form.scene.data.id,
-            type=form.type,
-            thumbnail_file=filename,
-            link=link_html,
-            author=author,
-        )
+        post.author = author
+        post.scene_id = req('Scene')
+
         db.session.add(post)
         db.session.commit()
 
         return redirect(url_for(".index"))
-    return render_template("new_link.html", form=form)
+    return render_template("new_link.html", scenes=scenes)
 
 
 @main.route("/scenes", methods=["GET", "POST"])

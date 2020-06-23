@@ -19,7 +19,7 @@
             <div class="col-md-8">
                 <p id="scene"><a href="{{ url_for('.scene', id=post.scene_id) }}" style="color:black;">{% if post.scene.name %} {{post.scene.name}} {% else %} General {% endif %}</a></p>
                 <h4 class="card-title"><a href="{{ url_for('.post', id=post.id) }}" style="color:black;">{{post.title}}</a></h4>
-                <p class="card-text">{{ post.body}}</p>
+                <p class="card-text">{% if post.body %} {{ post.body | safe }} {% endif %}</p>
                 <div class="card-bottom">
                     <span class="card-author">By: {{ post.author.username }}</span>
                     <span class="card-date">{{ moment(post.timestamp).format('MMMM Do, YYYY')}}</span>
