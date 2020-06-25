@@ -72,7 +72,9 @@
     {% if post.body_html %}
     {{ post.body_html | safe }}
     {% else %}
-      {{ post.body }}
+      {% if post.body %}
+        {{ post.body }}
+      {% endif %}
     {% endif %}
     <hr>
       <h3>Comments</h3>
