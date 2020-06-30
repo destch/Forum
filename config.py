@@ -10,7 +10,6 @@ class Config:
     MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", "False")
     MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL", "True")
     MAIL_USERNAME = os.environ.get("daniel.chavez9797@gmail.com")
-    MAIL_PASSWORD = os.environ.get("Realmadrid97")
     FLASKY_MAIL_SUBJECT_PREFIX = "[Groove Spot]"
     FLASKY_MAIL_SENDER = "daniel.chavez9797@gmail.com"
     FLASKY_ADMIN = "daniel.chavez9797@gmail.com"
