@@ -30,7 +30,7 @@ idna==2.9
 itsdangerous==1.1.0
 Jinja2==2.11.1
 jmespath==0.9.5
-Mako==1.1.0
+Mako==1.2.2
 Markdown==3.2.1
 MarkupSafe==1.1.1
 pkg-resources==0.0.0
